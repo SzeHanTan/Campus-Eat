@@ -1,4 +1,3 @@
-
 import { createContext, useEffect, useState } from "react";
 
 const StoreContext = createContext(null);
@@ -56,9 +55,10 @@ const StoreContextProvider = (props) => {
             await fetchFoodList();
             if (localStorage.getItem("token")){
                 setToken(localStorage.getItem("token"));
-                await loadCartData(localStorage.getItem("token"));0pp
+                await loadCartData(localStorage.getItem("token"));
             }
         }
         loadData();
     },[])
 }
+
