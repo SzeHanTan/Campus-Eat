@@ -4,7 +4,7 @@ import { StoreContext } from '../../../context/StoreContext';
 
 const Cart = () => {
 
-    const { cartItems, food_list, removeFromCart, getTotalCartAmount } = useContext(StoreContext); 
+    const { cartItems, food_list, removeFromCart, getTotalCartAmount,url } = useContext(StoreContext); 
 
     return (
         <div className="cart">
@@ -24,7 +24,7 @@ const Cart = () => {
                         return (
                             <div key={item._id}> {/* Added a unique key */}
                                 <div className="cart-items-title cart-items-item">
-                                    <img src={item.image} alt="" />
+                                    <img src={url+"/images/"+item.image} alt="" />
                                     <p>{item.name}</p>
                                     <p>${item.price}</p>
                                     <p>{cartItems[item._id]}</p>
