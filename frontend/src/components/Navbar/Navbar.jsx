@@ -5,6 +5,9 @@ import { assets } from '../../assets/assets'
 const Navbar = () => {
 
     const [menu,setmenu] = useState("home");
+
+    const{getTotalCartAmount}=useContext(StoreContext);
+
   return (
     <div className='navbar'>
       <img src={assets.logo} alt="" className="logo" />
@@ -18,7 +21,7 @@ const Navbar = () => {
         <img src={assets.search_icon} alt="" />
         <div className="navbar-search-icon">
           <img src={assets.basket_icon} alt="" />
-          <div className="dot"></div>
+          <div className={getTotalCartAmount()===0?"":"dot"}></div>
         </div>
         <button>sign in</button>
       </div>
