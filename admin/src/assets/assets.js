@@ -1,9 +1,9 @@
-import logo from './logo.png'
+import logo from './logo.jpg'
 import add_icon from './add_icon_white.png'
 import order_icon from './icon-order.png'
 import profile_image from './profile_image.png'
 import upload_area from './upload_area.png'
-import parcel_icon from './parcel_icom.png'
+import parcel_icon from './parcel_icon.png'
 
 export const assets ={
     logo,
