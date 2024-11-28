@@ -6,7 +6,7 @@ import { StoreContext } from '../../context/StoreContext';
 
 const Navbar = ({setShowLogin}) => {
 
-    const [menu,setmenu] = useState("home");
+    const [menu,setMenu] = useState("home");
 
     const{getTotalCartAmount,token,setToken}=useContext(StoreContext);
 
@@ -22,10 +22,10 @@ const Navbar = ({setShowLogin}) => {
     <div className='navbar'>
       <img src={assets.logo} alt="" className="logo" />
       <ul className="navbar-menu">
-        <Link to='/'onClick={()=>setmenu("home")} className={menu==="home"?"active":""}>home</Link>
-        <a href='#explore-menu' onClick={()=>setmenu("menu")}className={menu==="menu"?"active":""}>menu</a>
-        <a href='#group-discount' onClick={()=>setmenu("group-discount")}className={menu==="group-discount"?"active":""}>group discount</a>
-        <a href='#footer' onClick={()=>setmenu("contact us")}className={menu==="contact-us"?"active":""}>contact us</a>
+        <Link to='/'onClick={()=>setMenu("home")} className={menu==="home"?"active":""}>home</Link>
+        <a href='#explore-menu' onClick={()=>setMenu("menu")}className={menu==="menu"?"active":""}>menu</a>
+        <a href='#group-discount' onClick={()=>setMenu("group-discount")}className={menu==="group-discount"?"active":""}>group discount</a>
+        <a href='#footer' onClick={()=>setMenu("contact us")}className={menu==="contact-us"?"active":""}>contact us</a>
       </ul>
       <div className="navbar-right">
         <img src={assets.search_icon} alt="" />
