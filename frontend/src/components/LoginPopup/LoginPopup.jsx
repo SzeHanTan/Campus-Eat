@@ -7,8 +7,6 @@ import axios from "axios"
 
 const LoginPopup = ({setShowLogin}) => {
 
-const LoginPopup = () => {
-
     const [currState,setCurrState] = useState("Sign Up")
     const [data,setData] = useState({
       name:"",
