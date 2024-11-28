@@ -1,6 +1,8 @@
+import axios from 'axios';
+
 import { createContext, useEffect, useState } from "react";
 
-const StoreContext = createContext(null);
+export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
 
@@ -33,7 +35,7 @@ const StoreContextProvider = (props) => {
         let totalAmount = 0; 
         for(const item in cartItems){
             if(cartItems[item] > 0) {
-                let itemInfo = food_list.find((product) => product.id === i)
+                let itemInfo = food_list.find((product) => product.id === item);
                 totalAmount += itemInfo.price * cartItems[item];
             }
         }
@@ -51,7 +53,7 @@ const StoreContextProvider = (props) => {
     }
 
     useEffect(() => {
-        async function loadDate(){
+        async function loadData(){
             await fetchFoodList();
             if (localStorage.getItem("token")){
                 setToken(localStorage.getItem("token"));
