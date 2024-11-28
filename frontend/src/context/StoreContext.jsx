@@ -38,7 +38,7 @@ const StoreContextProvider = (props) => {
             }
         }
         return totalAmount;
-    }
+    };
 
     const fetchFoodList = async () => {
         const response = await axios.get(url+"/api/food/list");
@@ -66,7 +66,8 @@ const StoreContextProvider = (props) => {
         cartItems,
         setCartItems,
         addToCart,
-        removeFromCart
+        removeFromCart,
+        getTotalCartAmount
     }
     
     return (

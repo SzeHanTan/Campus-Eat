@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react';
 import ErrorBoundary from './ErrorBoundary';
 import Navbar from './components/Navbar/Navbar'
 import { Route, Routes } from 'react-router-dom'
