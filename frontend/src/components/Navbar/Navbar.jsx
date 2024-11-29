@@ -4,19 +4,18 @@ import { assets } from '../../assets/assets'
 import { Link, useNavigate } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext'; 
 
-const Navbar = ({setShowLogin}) => {
+const Navbar = ({ setShowLogin }) => {
+    const [menu, setMenu] = useState("home");
+    const [isPopupOpen, setIsPopupOpen] = useState(false); // State for popup
 
-    const [menu,setMenu] = useState("home");
-
-    const{getTotalCartAmount,token,setToken}=useContext(StoreContext);
-
+    const { getTotalCartAmount, token, setToken } = useContext(StoreContext);
     const navigate = useNavigate();
 
-    const logout = () =>{
-      localStorage.removeItem("token");
-      setToken("");
-      navigate("/")
-    }
+    const logout = () => {
+        localStorage.removeItem("token");
+        setToken("");
+        navigate("/");
+    };
 
   return (
     <div className='navbar'>
@@ -24,7 +23,7 @@ const Navbar = ({setShowLogin}) => {
       <ul className="navbar-menu">
         <Link to='/'onClick={()=>setMenu("home")} className={menu==="home"?"active":""}>home</Link>
         <a href='#explore-menu' onClick={()=>setMenu("menu")}className={menu==="menu"?"active":""}>menu</a>
-        <a href='#group-discount' onClick={()=>setMenu("group-discount")}className={menu==="group-discount"?"active":""}>group discount</a>
+        <a href='#group-discount-popup' onClick={()=>setMenu("group-discount-popup")}className={menu==="group-discount-popup"?"active":""}>group discount</a>
         <a href='#footer' onClick={()=>setMenu("contact us")}className={menu==="contact-us"?"active":""}>contact us</a>
       </ul>
       <div className="navbar-right">
