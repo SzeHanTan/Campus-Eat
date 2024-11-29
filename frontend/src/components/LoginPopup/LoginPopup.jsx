@@ -6,6 +6,8 @@ import { useContext } from 'react'
 import axios from "axios"
 
 const LoginPopup = ({setShowLogin}) => {
+  
+  const {url,setToken} = useContext(StoreContext)
 
     const [currState,setCurrState] = useState("Sign Up")
     const [data,setData] = useState({
@@ -34,7 +36,7 @@ const LoginPopup = ({setShowLogin}) => {
 
       if (response.data.success) {
         setToken(response.data.token);
-        localStorage.setItem("token",response.data.token)
+        localStorage.setItem("token",response.data.token);
         setShowLogin(false)
       }
       else{
