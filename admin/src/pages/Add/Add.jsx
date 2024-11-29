@@ -1,17 +1,21 @@
 import React from 'react'
 import './Add.css'
 import { assets } from '../../assets/assets'
+import { useState } from 'react'
 
 const Add = () => {
+
+    const [image,setImage] = useState(false);
+
   return (
     <div className='add'>
         <form className='flex-col'>
             <div className="add-img-upload flex-col">
                 <p>Upload Image</p>
                 <label htmlFor="image">
-                    <img src={assets.upload_area} alt="" />
+                    <img src={image?URL.createObjectURL(image):assets.upload_area} alt="" />
                 </label>
-                <input type="file" id="image" hidden required />
+                <input onChange={(e)=>setImage(e.target.files[0])} type="file" id="image" hidden required />
             </div>
             <div className="add-product-name flex-col">
                 <p>Product name</p>
