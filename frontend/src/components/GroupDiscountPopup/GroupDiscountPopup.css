@@ -1,30 +1,29 @@
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
+.group-discount-popup {
+    font-family: Arial, sans-serif; /* Clean and modern font */
+    text-align: center; /* Center-align the content */
+    color: #333; /* Dark gray text color for readability */
+    margin: 20px 0; /* Space above and below the section */
 }
 
-.popup-container {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    max-width: 400px;
-    width: 80%;
+.group-discount-popup h2 {
+    font-size: 1.8rem; /* Larger font size for the heading */
+    margin-bottom: 10px; /* Space below the heading */
 }
 
-.close-button {
-    background-color: #ff5c5c;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+.group-discount-popup p {
+    font-size: 1rem; /* Standard size for paragraph text */
+    margin-bottom: 15px; /* Space below the paragraph */
+    color: #555; /* Slightly lighter gray for secondary text */
+}
+
+.group-discount-popup ul {
+    list-style-type: none; /* Remove bullet points */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+.group-discount-popup ul li {
+    font-size: 1rem; /* Standard font size */
+    margin: 8px 0; /* Spacing between items */
+    line-height: 1.5; /* Increase line height for readability */
 }
