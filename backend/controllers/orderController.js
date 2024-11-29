@@ -45,7 +45,7 @@ const placeOrder = async (req, res) => {
         // Prepare line items for Stripe payment
         const line_items = items.map((item) => ({
             price_data: {
-                currency: "myr",
+                currency: "rm",
                 product_data: { name: item.name },
                 unit_amount: item.price * 100, // Convert to Stripe's currency format
             },
@@ -55,7 +55,7 @@ const placeOrder = async (req, res) => {
         // Add delivery charges
         line_items.push({
             price_data: {
-                currency: "myr",
+                currency: "rm",
                 product_data: { name: "Delivery Charges" },
                 unit_amount: 2 * 100, // Convert to Stripe's currency format
             },
@@ -66,7 +66,7 @@ const placeOrder = async (req, res) => {
         if (discount > 0) {
             line_items.push({
                 price_data: {
-                    currency: "myr",
+                    currency: "rm",
                     product_data: { name: "Group Discount" },
                     unit_amount: -discount * 100, // Stripe supports negative amounts for discounts
                 },
