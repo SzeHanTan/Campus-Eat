@@ -68,7 +68,7 @@ const placeOrder = async (req, res) => {
                 price_data: {
                     currency: "myr",
                     product_data: { name: "Group Discount" },
-                    unit_amount: -discount * 100 * 4.5, // Stripe supports negative amounts for discounts
+                    unit_amount: -discount * 100, // Stripe supports negative amounts for discounts
                 },
                 quantity: 1,
             });
