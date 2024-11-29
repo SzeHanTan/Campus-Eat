@@ -47,7 +47,7 @@ const placeOrder = async (req, res) => {
             price_data: {
                 currency: "myr",
                 product_data: { name: item.name },
-                unit_amount: item.price * 100 * 4.5, // Convert to Stripe's currency format
+                unit_amount: item.price * 100, // Convert to Stripe's currency format
             },
             quantity: item.quantity,
         }));
@@ -57,7 +57,7 @@ const placeOrder = async (req, res) => {
             price_data: {
                 currency: "myr",
                 product_data: { name: "Delivery Charges" },
-                unit_amount: 2 * 100 * 4.5, // Convert to Stripe's currency format
+                unit_amount: 2 * 100, // Convert to Stripe's currency format
             },
             quantity: 1,
         });
