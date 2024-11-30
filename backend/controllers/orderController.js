@@ -18,36 +18,40 @@ const calculateGroupDiscount = (items, groupSize) => {
 
 // Placing user order for frontend
 const placeOrder = async (req, res) => {
-    const frontend_url = "http://localhost:5174";
+    const frontend_url = "http://localhost:5174"; // Update as per your frontend URL
 
     try {
-        // Extract group size and items from the request
         const { userId, items, amount, address, groupSize } = req.body;
 
+        // Validate input
+        if (!userId || !items || !amount || !address) {
+            return res.status(400).json({ success: false, message: "Missing required fields" });
+        }
+
         // Calculate group discount
-        const discount = calculateGroupDiscount(items, groupSize);
-        const discountedAmount = amount - discount;
+        const discount = calculateGroupDiscount(items, groupSize || 1);
+        const discountedAmount = Math.max(0, amount - discount); // Ensure amount is not negative
 
         // Save new order to the database
         const newOrder = new orderModel({
             userId,
             items,
-            amount: discountedAmount, // Save discounted amount
+            amount: discountedAmount,
             address,
-            discountApplied: discount > 0, // Track if discount was applied
-            discountAmount: discount, // Store the discount amount
+            discountApplied: discount > 0,
+            discountAmount: discount,
         });
         await newOrder.save();
 
         // Clear the user's cart after placing the order
         await userModel.findByIdAndUpdate(userId, { cartData: {} });
 
-        // Prepare line items for Stripe payment
+        // Prepare line items for Stripe
         const line_items = items.map((item) => ({
             price_data: {
                 currency: "myr",
                 product_data: { name: item.name },
-                unit_amount: item.price*100, // Convert to Stripe's currency format
+                unit_amount: Math.round(item.price * 100), // Convert to Stripe format
             },
             quantity: item.quantity,
         }));
@@ -57,27 +61,16 @@ const placeOrder = async (req, res) => {
             price_data: {
                 currency: "myr",
                 product_data: { name: "Delivery Charges" },
-                unit_amount: 2*100 // Convert to Stripe's currency format
+                unit_amount: 200, // RM2 delivery fee in cents
             },
             quantity: 1,
         });
-
-        // Add a discount line item if applicable
-        if (discount > 0) {
-            line_items.push({
-                price_data: {
-                    currency: "myr",
-                    product_data: { name: "Group Discount" },
-                    unit_amount: -discount*100 // Stripe supports negative amounts for discounts
-                },
-                quantity: 1,
-            });
-        }
 
         // Create a Stripe checkout session
         const session = await stripe.checkout.sessions.create({
             line_items,
             mode: "payment",
+            discounts: discount > 0 ? [{ coupon: "GROUPDISCOUNT" }] : [], // Example coupon handling
             success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
             cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
         });
@@ -85,8 +78,8 @@ const placeOrder = async (req, res) => {
         // Send the session URL to the frontend
         res.json({ success: true, session_url: session.url });
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" });
+        console.error("Error placing order:", error.message);
+        res.status(500).json({ success: false, message: "Server error occurred while placing order" });
     }
 };
 
@@ -95,18 +88,20 @@ const verifyOrder = async (req, res) => {
     const { orderId, success } = req.body;
 
     try {
+        if (!orderId) {
+            return res.status(400).json({ success: false, message: "Order ID is required" });
+        }
+
         if (success === "true") {
-            // Update the order status to paid
             await orderModel.findByIdAndUpdate(orderId, { payment: true });
-            res.json({ success: true, message: "Paid" });
+            res.json({ success: true, message: "Payment successful" });
         } else {
-            // Delete the order if payment failed
             await orderModel.findByIdAndDelete(orderId);
-            res.json({ success: false, message: "Not Paid" });
+            res.json({ success: false, message: "Payment failed, order deleted" });
         }
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" });
+        console.error("Error verifying order:", error.message);
+        res.status(500).json({ success: false, message: "Server error occurred while verifying order" });
     }
 };
 
@@ -116,33 +111,38 @@ const userOrders = async (req, res) => {
         const orders = await orderModel.find({ userId: req.body.userId });
         res.json({ success: true, data: orders });
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" });
+        console.error("Error fetching user orders:", error.message);
+        res.status(500).json({ success: false, message: "Server error occurred while fetching orders" });
     }
 };
 
-//Listing orders for admin panel
-const listOrders=async(req,res)=>{
+// Listing orders for admin panel
+const listOrders = async (req, res) => {
     try {
-        const orders=await orderModel.find({});
-        res.json({success:true,data:orders})
+        const orders = await orderModel.find({});
+        res.json({ success: true, data: orders });
     } catch (error) {
-        console.log(error);
-        res.json({ success: false, message: "Error" });
+        console.error("Error listing orders:", error.message);
+        res.status(500).json({ success: false, message: "Server error occurred while listing orders" });
     }
-}
+};
 
-//api for updating order status
-const updateStatus=async(req,res)=>{
+// API for updating order status
+const updateStatus = async (req, res) => {
     try {
-        const orders = await orderModel.findByIdAndUpdate(req.body.orderId,{status:req.body.status});
-        res.json({success:true,message:"Status Updated"})
+        const { orderId, status } = req.body;
+
+        if (!orderId || !status) {
+            return res.status(400).json({ success: false, message: "Order ID and status are required" });
+        }
+
+        await orderModel.findByIdAndUpdate(orderId, { status });
+        res.json({ success: true, message: "Order status updated" });
     } catch (error) {
-        console.log(error);
-        res.json({success:false,message:"Error"})
-        
+        console.error("Error updating order status:", error.message);
+        res.status(500).json({ success: false, message: "Server error occurred while updating order status" });
     }
+};
 
-}
+export { placeOrder, verifyOrder, userOrders, listOrders, updateStatus };
 
-export {placeOrder,verifyOrder,userOrders,listOrders,updateStatus}

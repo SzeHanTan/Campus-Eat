@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const PlaceOrder = () => {
   const { getTotalCartAmount, token, food_list, cartItems, url } = useContext(StoreContext);
+
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -15,19 +16,28 @@ const PlaceOrder = () => {
     state: "",
     postcode: "",
     country: "",
-    phone: ""
+    phone: "",
+    ecoFriendly: false, // Eco-friendly option
+    customized: false,  // Customized order option
+    customizationNotes: "", // Notes for customization
   });
 
   const onChangeHandler = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-    setData(data => ({ ...data, [name]: value }));
+    const { name, type, checked, value } = event.target;
+
+    if (name === "ecoFriendly" && !data.ecoFriendly && checked) {
+      alert("No cutlery and plastic bag will be provided. Thank you for reducing waste!");
+    }
+
+    setData((data) => ({
+      ...data,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const placeOrder = async (event) => {
     event.preventDefault();
 
-    // Prepare orderItems from cartItems
     let orderItems = [];
     food_list.forEach((item) => {
       if (cartItems[item._id] > 0) {
@@ -39,26 +49,31 @@ const PlaceOrder = () => {
     let orderData = {
       address: data,
       items: orderItems,
-      amount: getTotalCartAmount() + 2, // Adding delivery fee
+      amount: getTotalCartAmount() + 2,
+      ecoFriendly: data.ecoFriendly,
+      customized: data.customized,
+      customizationNotes: data.customizationNotes,
     };
 
     try {
-      // Send the order data to the backend
       let response = await axios.post(`${url}/api/order/place`, orderData, {
-        headers: { token }
+        headers: { token },
       });
 
-      // Handle the response from the backend
       if (response.data.success) {
         const { session_url } = response.data;
-        console.log("Redirecting to:", session_url);
-        window.location.replace(session_url); // Redirect to the Stripe payment session
+        // Redirect to the payment page
+        if (session_url) {
+          window.location.href = session_url;
+        } else {
+          alert("Payment session URL not received.");
+        }
       } else {
-        alert("Error: " + response.data.message); // Show error message if the API request fails
+        alert("Error: " + response.data.message);
       }
     } catch (error) {
       console.error("Order placement failed:", error);
-      alert("Error: Something went wrong with the request.");
+      alert("Error: Something went wrong.");
     }
   };
 
@@ -66,9 +81,9 @@ const PlaceOrder = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate('/cart'); // Redirect if user is not logged in
+      navigate('/cart');
     } else if (getTotalCartAmount() === 0) {
-      navigate('/cart'); // Redirect if cart is empty
+      navigate('/cart');
     }
   }, [token]);
 
@@ -91,6 +106,38 @@ const PlaceOrder = () => {
           <input required name="country" onChange={onChangeHandler} value={data.country} type="text" placeholder="Country" />
         </div>
         <input required name="phone" onChange={onChangeHandler} value={data.phone} type="text" placeholder="Phone" />
+
+        <div className="order-options">
+          <label className="checkbox-label">
+            <span>Eco-Friendly Packaging</span>
+            <input
+              type="checkbox"
+              name="ecoFriendly"
+              checked={data.ecoFriendly}
+              onChange={onChangeHandler}
+            />
+          </label>
+
+          <label className="checkbox-label">
+            <span>Customized Order</span>
+            <input
+              type="checkbox"
+              name="customized"
+              checked={data.customized}
+              onChange={onChangeHandler}
+            />
+          </label>
+
+          {data.customized && (
+            <textarea
+              name="customizationNotes"
+              value={data.customizationNotes}
+              onChange={onChangeHandler}
+              placeholder="Please specify your customization (e.g., less rice, no vegetable)"
+              className="customization-textarea"
+            ></textarea>
+          )}
+        </div>
       </div>
 
       <div className="place-order-right">
@@ -120,3 +167,5 @@ const PlaceOrder = () => {
 };
 
 export default PlaceOrder;
+
+
