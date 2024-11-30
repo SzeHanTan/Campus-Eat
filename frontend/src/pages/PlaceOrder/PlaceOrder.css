@@ -1,57 +1,68 @@
-.place-order{
-   display: flex;
-   align-items: start;
-   justify-content: space-between; 
-   gap: 50px;
-   margin-top: 100px;
-}
-.place-order-left{
+.place-order {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 50px;
+    margin-top: 100px;
+  }
+  
+  .place-order-left {
     width: 100%;
-    max-width: max(30%,500px);
-}
-.place-order-left .title{
+    max-width: 500px;
+    padding: 20px;
+  }
+  
+  .place-order-left .title {
     font-size: 30px;
     font-weight: 600;
     margin-bottom: 50px;
-}
-.place-order-left input{
+  }
+  
+  .place-order-left input {
     margin-bottom: 15px;
     width: 100%;
     padding: 10px;
     border: 1px solid #c5c5c5;
     border-radius: 4px;
     outline-color: red;
-}
-.place-order-left .multi-field{
+  }
+  
+  .place-order-left .multi-field {
     display: flex;
     gap: 10px;
-}
-.place-order-right{
+  }
+  
+  .place-order-right {
     width: 100%;
-    max-width: max(40%,500px);
-}
-.place-order .cart-total button{
+    max-width: 500px;
+    padding: 20px;
+  }
+  
+  .place-order .cart-total button {
     margin-top: 30px;
-}
-.order-options {
+  }
+  
+  .order-options {
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
   
-.checkbox-label {
+  .checkbox-label {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    align-items: center; /* Align checkbox with text */
     font-size: 16px;
+    line-height: 24px; /* Ensures vertical centering with checkbox */
   }
   
-.checkbox-label input[type="checkbox"] {
+  .checkbox-label input[type="checkbox"] {
     margin-left: 10px;
+    transform: scale(1.2);  /* Slightly enlarge the checkbox */
+    vertical-align: middle; /* Ensures checkbox is aligned with the text */
   }
   
-.customization-textarea {
+  .customization-textarea {
     width: 100%;
     height: 100px;
     margin-top: 10px;
@@ -61,9 +72,43 @@
     font-size: 14px;
   }
   
-.place-order-left,
-.place-order-right {
+  .place-order-left,
+  .place-order-right {
     padding: 20px;
   }
+  
+  /* New Class to Align Delivery and Pickup in a Row */
+  .order-type-selection {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 20px; /* Adds space below the order type section */
+  }
+  
+  .order-type-selection label {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .order-type-selection input[type="radio"] {
+    margin-left: 10px;
+    transform: scale(1.2);  /* Slightly enlarge the radio button */
+    vertical-align: middle; /* Align radio buttons with the text */
+  }
+  
+  /* Space between reservation time section and other sections */
+  .reservation-time {
+    margin-top: 30px; /* Adds space between reservation and previous sections */
+  }
+  
+  .reservation-time input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
   
   

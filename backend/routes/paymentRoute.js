@@ -1,12 +1,12 @@
-import express from "express";
-import { handlePaymentScreenshot } from "../controllers/paymentController.js";
-import multer from "multer";
+// backend/routes/paymentRoute.js
+import express from 'express';
+import { uploadPaymentScreenshot } from '../controllers/paymentController.js'; // Import the controller function
+import upload from '../middleware/uploadmiddleware.js'; // Import the Multer middleware
 
-// Set up multer for handling image uploads
-const upload = multer({ dest: 'uploads/' });
 const router = express.Router();
 
-// Route to handle the payment screenshot upload
-router.post("/upload-screenshot", upload.single('paymentImage'), handlePaymentScreenshot);
+// POST request to upload payment screenshot
+// This will use the 'upload' middleware to handle the file upload
+router.post('/upload-screenshot', upload, uploadPaymentScreenshot);
 
 export default router;
