@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react'
 import './Verify.css'
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { StoreContext } from '../../context/StoreContext';
+import { useContext } from 'react';
 
 const Verify = () => {
 

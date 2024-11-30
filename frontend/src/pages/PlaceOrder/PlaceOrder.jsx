@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import './PlaceOrder.css';
 import { StoreContext } from '../../context/StoreContext';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const PlaceOrder = () => {
   const { getTotalCartAmount, token, food_list, cartItems, url } = useContext(StoreContext);
+  const navigate = useNavigate();
 
   const [data, setData] = useState({
     firstName: "",
@@ -17,9 +18,9 @@ const PlaceOrder = () => {
     postcode: "",
     country: "",
     phone: "",
-    ecoFriendly: false, // Eco-friendly option
-    customized: false,  // Customized order option
-    customizationNotes: "", // Notes for customization
+    ecoFriendly: false,
+    customized: false,
+    customizationNotes: "",
   });
 
   const onChangeHandler = (event) => {
@@ -29,31 +30,30 @@ const PlaceOrder = () => {
       alert("No cutlery and plastic bag will be provided. Thank you for reducing waste!");
     }
 
-    setData((data) => ({
-      ...data,
+    setData((prevData) => ({
+      ...prevData,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const placeOrder = async (event) => {
     event.preventDefault();
-
     let orderItems = [];
-    food_list.forEach((item) => {
+    food_list.map((item) => {
       if (cartItems[item._id] > 0) {
-        let itemInfo = { ...item, quantity: cartItems[item._id] };
+        let itemInfo = item;
+        itemInfo["quantity"] = cartItems[item._id];
         orderItems.push(itemInfo);
       }
-    });
-
+    })    
     let orderData = {
       address: data,
       items: orderItems,
-      amount: getTotalCartAmount() + 2,
+      amount: getTotalCartAmount() + 2, // Add delivery fee
       ecoFriendly: data.ecoFriendly,
       customized: data.customized,
       customizationNotes: data.customizationNotes,
-    };
+    }
 
     try {
       let response = await axios.post(`${url}/api/order/place`, orderData, {
@@ -64,7 +64,7 @@ const PlaceOrder = () => {
         const { session_url } = response.data;
         // Redirect to the payment page
         if (session_url) {
-          window.location.href = session_url;
+          navigate('/payment'); // Use navigate instead of window.location.href
         } else {
           alert("Payment session URL not received.");
         }
@@ -76,16 +76,6 @@ const PlaceOrder = () => {
       alert("Error: Something went wrong.");
     }
   };
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!token) {
-      navigate('/cart');
-    } else if (getTotalCartAmount() === 0) {
-      navigate('/cart');
-    }
-  }, [token]);
 
   return (
     <form onSubmit={placeOrder} className="place-order">
@@ -159,7 +149,7 @@ const PlaceOrder = () => {
               <b>RM{getTotalCartAmount() === 0 ? 0 : getTotalCartAmount() + 2}</b>
             </div>
           </div>
-          <button type="submit">PROCEED TO PAYMENT</button>
+          <button type='submit'>PROCEED TO PAYMENT</button>
         </div>
       </div>
     </form>

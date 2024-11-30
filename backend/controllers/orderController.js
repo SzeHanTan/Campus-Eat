@@ -1,8 +1,8 @@
 import orderModel from "../models/orderModel.js";
-import userModel from "../models/userModel.js";
-import Stripe from "stripe";
+import userModel from '../models/userModel.js'
+import Stripe from "stripe"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 // Helper function to calculate group discount
 const calculateGroupDiscount = (items, groupSize) => {
@@ -44,14 +44,16 @@ const placeOrder = async (req, res) => {
         await newOrder.save();
 
         // Clear the user's cart after placing the order
-        await userModel.findByIdAndUpdate(userId, { cartData: {} });
+        await userModel.findByIdAndUpdate(req.body.userId, {cartData:{}});
 
         // Prepare line items for Stripe
-        const line_items = items.map((item) => ({
+        const line_items = req.body.items.map((item) => ({
             price_data: {
                 currency: "myr",
-                product_data: { name: item.name },
-                unit_amount: Math.round(item.price * 100), // Convert to Stripe format
+                product_data: { 
+                    name: item.name 
+                },
+                unit_amount: Math.round(item.price * 100) // Convert to Stripe format
             },
             quantity: item.quantity,
         }));
@@ -60,23 +62,25 @@ const placeOrder = async (req, res) => {
         line_items.push({
             price_data: {
                 currency: "myr",
-                product_data: { name: "Delivery Charges" },
+                product_data: {
+                    name: "Delivery Charges"
+                },
                 unit_amount: 200, // RM2 delivery fee in cents
             },
-            quantity: 1,
+            quantity: 1
         });
 
         // Create a Stripe checkout session
         const session = await stripe.checkout.sessions.create({
-            line_items,
-            mode: "payment",
+            line_items: line_items,
+            mode: 'payment',
             discounts: discount > 0 ? [{ coupon: "GROUPDISCOUNT" }] : [], // Example coupon handling
             success_url: `${frontend_url}/verify?success=true&orderId=${newOrder._id}`,
             cancel_url: `${frontend_url}/verify?success=false&orderId=${newOrder._id}`,
-        });
+        })
 
         // Send the session URL to the frontend
-        res.json({ success: true, session_url: session.url });
+        res.json({success: true, session_url: session.url});
     } catch (error) {
         console.error("Error placing order:", error.message);
         res.status(500).json({ success: false, message: "Server error occurred while placing order" });
